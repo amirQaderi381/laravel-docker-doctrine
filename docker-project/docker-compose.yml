@@ -1,0 +1,49 @@
+version: "3.7"
+services:
+    app:
+        build:
+            args:
+                user: amir
+                uid: 1000
+            context: .
+            dockerfile: Dockerfile
+        working_dir: /var/www/
+        volumes:
+            - ../project/.:/var/www/
+    
+        networks:
+            - default
+
+    db:
+        image: mysql:8.0
+        container_name: laravel_database
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: laravel_database
+            MYSQL_ROOT_PASSWORD: root
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        ports:
+            - 33061:3306
+        volumes:
+            - mysql_data:/var/lib/mysql:rw,delegated
+        networks:
+            - default
+
+    nginx:
+
+        image: nginx:alpine
+        container_name: nginx
+        restart: unless-stopped
+        ports:
+            - 8001:80
+        volumes:
+            - ../project/.:/var/www
+            - ./docker-compose/nginx:/etc/nginx/conf.d/
+
+        networks:
+            - default
+
+volumes:
+        mysql_data:
+            driver: local
