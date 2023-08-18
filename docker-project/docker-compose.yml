@@ -15,8 +15,8 @@ services:
             - default
 
     db:
-        image: mysql:8.0
-        container_name: laravel_database
+        image: mysql:latest
+        container_name: database
         restart: unless-stopped
         environment:
             MYSQL_DATABASE: laravel_database
